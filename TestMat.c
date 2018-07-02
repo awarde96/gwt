@@ -182,7 +182,7 @@ int main()
       S = S + A[j] * M2[JA[j]];
       //printf("%d ", A[j] * M2[JA[j]]);
     }
-    printf("%d ", Out1[i]);
+    printf("%d ", S);
   }
 
   printf("Test success\n");

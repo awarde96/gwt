@@ -81,19 +81,25 @@ void KerMatMultParallel(KerMatMultParallel_ArgT *Arg)
   }*/
 
   int acc = 0;
+  int total = H_In1/rt_nb_pe();
   //closest version to correcrt for csr
   for (Col=0; Col<Last; Col++) {
     for (Line=0; Line<H_In1; Line++) {
-      int S = 0;
-      for (int i=0; i</*W_In1*/IA[Line+1] - IA[Line]; i++) {
-        //printf("%d ", gap8_coreid());
-        //if(gap8_coreid() == 0){
+      int S = 0;     
+      if((unsigned int) gap8_coreid() == (Line/total)%8){
+        //printf("%d\n", Line/total);
+        for (int i=0; i</*W_In1*/IA[Line+1] - IA[Line]; i++) {               
           S = S + (A[i+acc] * In2[JA[(i+acc)]%10]);//In1[Line*W_In1 + i] * In2[i*W_In2+Col];
-        //printf("%d\n", In2[i+acc%10]);
-        //}
+          //printf("%d ", S);
+
+          //printf("%d\n", In2[i+acc%10]);
+        }
+      
+        acc += IA[Line+1] - IA[Line];
+        Out[Line*W_Out+Col+OutFirstCol] = S;
+        //printf("%d ", Line*W_Out+Col+OutFirstCol);
       }
-      acc += IA[Line+1] - IA[Line];
-      Out[Line*W_Out+Col+OutFirstCol] = S;
+
       //printf("%d ", S);
     }
   }
