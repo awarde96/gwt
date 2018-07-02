@@ -12,9 +12,9 @@
 #include "Gap8.h"
 
 typedef struct {
-        short int * __restrict__ In1;
-        unsigned int W_In1;
-        unsigned int H_In1;
+        //short int * __restrict__ In1;
+        //unsigned int W_In1;
+        //unsigned int H_In1;
         short int * __restrict__ In2;
         unsigned int W_In2;
         short int * __restrict__ Out;

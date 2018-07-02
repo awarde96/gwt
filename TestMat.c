@@ -42,7 +42,7 @@ static void cluster_main()
 
     rt_perf_reset(perf);
     rt_perf_start(perf);
-    ParMatMult(M1, M2, Out1, A, IA, JA, 0);
+    ParMatMult(/*M1,*/ M2, Out1, A, IA, JA, 0);
     rt_perf_stop(perf);
     rt_perf_save(perf);
     ElapsedTime[0] = rt_perf_get(perf, RT_PERF_CYCLES);
@@ -62,9 +62,9 @@ int main()
 {
 
   printf ("Matrix Mult start\n");
-  int H_M1 = 20;
-  int W_M1 = 20;
-  int H_M2 = 20;
+  int H_M1 = 10;
+  int W_M1 = 500;
+  int H_M2 = 500;
   int W_M2 = 1;
 
   int W_Out = H_M1;

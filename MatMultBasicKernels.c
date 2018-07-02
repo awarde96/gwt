@@ -39,9 +39,9 @@ static inline unsigned int __attribute__((always_inline)) ChunkSize(unsigned int
 void KerMatMultParallel(KerMatMultParallel_ArgT *Arg)
 
 {
-  short int * __restrict__ In1 = Arg->In1;
-  unsigned int W_In1 = Arg->W_In1;
-  unsigned int H_In1 = Arg->H_In1;
+  //short int * __restrict__ In1 = Arg->In1;
+  //unsigned int W_In1 = Arg->W_In1;
+  //unsigned int H_In1 = Arg->H_In1;
   short int * __restrict__ In2 = Arg->In2;
   unsigned int W_In2 = Arg->W_In2;
   short int * __restrict__ Out = Arg->Out;
@@ -52,6 +52,8 @@ void KerMatMultParallel(KerMatMultParallel_ArgT *Arg)
   short int * __restrict__ IA = Arg->IA;
   short int * __restrict__ JA = Arg->JA;
 
+  unsigned int W_In1 = 400;
+  unsigned int H_In1 = 10;
 
   unsigned int H_In2 = W_In1;
   unsigned int H_Out = H_In1;
@@ -63,13 +65,13 @@ void KerMatMultParallel(KerMatMultParallel_ArgT *Arg)
 
   //regualr fully connected version that works fine
   //for (Col=0; Col<W_In2; Col++) {
-  for (Col=First; Col<Last; Col++) {
+  /*for (Col=First; Col<Last; Col++) {
     for (Line=0; Line<H_In1; Line++) {
       int S = 0;
       for (i=0; i<W_In1; i++) S = S + In1[Line*W_In1 + i] * In2[i*W_In2+Col];
       //Out[Line*W_Out+Col+OutFirstCol] = S;
     }
-  }
+  }*/
 //  wait_synch_barrier();
 
   /*for(unsigned int i = 0; i < W_Out; i++){
@@ -91,10 +93,8 @@ void KerMatMultParallel(KerMatMultParallel_ArgT *Arg)
         for (int i=0; i</*W_In1*/IA[Line+1] - IA[Line]; i++) {               
           S = S + (A[i+acc] * In2[JA[(i+acc)]%10]);//In1[Line*W_In1 + i] * In2[i*W_In2+Col];
           //printf("%d ", S);
-
           //printf("%d\n", In2[i+acc%10]);
-        }
-      
+        }     
         acc += IA[Line+1] - IA[Line];
         Out[Line*W_Out+Col+OutFirstCol] = S;
         //printf("%d ", Line*W_Out+Col+OutFirstCol);

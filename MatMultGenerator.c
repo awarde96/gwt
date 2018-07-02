@@ -16,10 +16,10 @@ void LoadLibrary()
 
 {
 	LibKernel("KerMatMultParallel", CALL_PARALLEL,
-		CArgs(12,
-			TCArg("short int * __restrict__", "In1"),
-			TCArg("unsigned int", "W_In1"),
-			TCArg("unsigned int", "H_In1"),
+		CArgs(9,
+			//TCArg("short int * __restrict__", "In1"),
+			//TCArg("unsigned int", "W_In1"),
+			//TCArg("unsigned int", "H_In1"),
 			TCArg("short int * __restrict__", "In2"),
 			TCArg("unsigned int", "W_In2"),
 			TCArg("short int * __restrict__", "Out"),
@@ -58,8 +58,8 @@ void ParMatMultGenerator(char *Name, unsigned int LineM1, unsigned int ColM1, un
                 0,
                 KernelIterationOrder(2, KER_TILE1, KER_TILE),
                 TILE_HOR,
-                CArgs(6,
-                        TCArg("Word16 *  __restrict__", "M1"),
+                CArgs(5,
+                        //TCArg("Word16 *  __restrict__", "M1"),
                         TCArg("Word16 *  __restrict__", "M2"),
                         TCArg("Word16 *  __restrict__", "Out"),
                         TCArg("Word16 *  __restrict__", "A"),
@@ -68,16 +68,16 @@ void ParMatMultGenerator(char *Name, unsigned int LineM1, unsigned int ColM1, un
                 ),
 		Calls(1,
 			Call("KerMatMultParallel", LOC_INNER_LOOP,
-				Bindings(12,
-					K_Arg("KerM1",  KER_ARG_TILE),    K_Arg("KerM1",  KER_ARG_TILE_W), K_Arg("KerM1",  KER_ARG_TILE_H),
+				Bindings(9,
+					//K_Arg("KerM1",  KER_ARG_TILE),    K_Arg("KerM1",  KER_ARG_TILE_W), K_Arg("KerM1",  KER_ARG_TILE_H),
 					K_Arg("KerM2",  KER_ARG_TILE),    K_Arg("KerM2",  KER_ARG_TILE_W),
 					K_Arg("KerOut", KER_ARG_TILE),    K_Arg("KerOut", KER_ARG_TILE_W), K_Arg("KerM2",  KER_ARG_TILE_BASE),
 					Imm(0), K_Arg("KerA",  KER_ARG_TILE), K_Arg("KerIA",  KER_ARG_TILE), K_Arg("KerJA",  KER_ARG_TILE)
 				)
 			)
 		),
-		KerArgs(6,
-			KerArg("KerM1",  OBJ_IN_DB|O_TILE1,  ColM1, LineM1, sizeof(Word16), 0, 0,                        0, "M1",  0),
+		KerArgs(5,
+			//KerArg("KerM1",  OBJ_IN_DB|O_TILE1,  ColM1, LineM1, sizeof(Word16), 0, 0,                        0, "M1",  0),
 			KerArg("KerM2",  OBJ_IN_DB,  ColM2, LineM2, sizeof(Word16), 0, OBJ_CONSTRAINTS_TILE_VER, 0, "M2",  0),
 			KerArg("KerOut", OBJ_OUT_DB|O_TILE1, ColO,  LineO,  sizeof(Word16), 0, 0,                        0, "Out", 0),
 			KerArg("KerA",  OBJ_IN_DB|O_TILE1,  (LineM1*ColM1)/2, 1, sizeof(Word16), 0, 0,                        0, "A",  0),
@@ -102,7 +102,7 @@ void Model(unsigned int L1Memory)
 
 	LoadLibrary();
 
-	ParMatMultGenerator    ("ParMatMult",     20, 20, 20, 1);
+	ParMatMultGenerator    ("ParMatMult",     10, 500, 500, 1);
 }
 
 int main(int argc, char **argv)
