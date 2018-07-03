@@ -18,11 +18,11 @@
 #define STACK_SIZE      2048
 
 L2_MEM short int *M1;
-L2_MEM short int *M2;
+L2_MEM signed char *M2;
 L2_MEM short int *Out1;
 //L2_MEM short int *Out2;
 
-L2_MEM short int *A;
+L2_MEM signed char *A;
 L2_MEM short int *IA;
 L2_MEM short int *JA;
 
@@ -63,15 +63,15 @@ int main()
 
   printf ("Matrix Mult start\n");
   int H_M1 = 10;
-  int W_M1 = 1000;
-  int H_M2 = 1000;
+  int W_M1 = 1500;
+  int H_M2 = 1500;
   int W_M2 = 1;
 
   int W_Out = H_M1;
   int H_Out = W_M2;
 
   M1  = (short int *) rt_alloc(RT_ALLOC_L2_CL_DATA, W_M1*H_M1*sizeof(short int));
-  M2  = (short int *) rt_alloc(RT_ALLOC_L2_CL_DATA, W_M2*H_M2*sizeof(short int));
+  M2  = (signed char *) rt_alloc(RT_ALLOC_L2_CL_DATA, W_M2*H_M2*sizeof(char));
   Out1 = (short int *) rt_alloc(RT_ALLOC_L2_CL_DATA, W_Out*H_Out*sizeof(short int));
   //Out2 = (short int *) rt_alloc(RT_ALLOC_L2_CL_DATA, W_Out*H_Out*sizeof(short int));
   if ((M1==0)||(M2==0)||(Out1==0) /*||(Out2==0)*/) {
@@ -92,7 +92,7 @@ int main()
       nnz++;
   }
 
-  A = (short int *) rt_alloc(RT_ALLOC_L2_CL_DATA, nnz*sizeof(short int));
+  A = (signed char *) rt_alloc(RT_ALLOC_L2_CL_DATA, nnz*sizeof(signed char));
   JA = (short int *) rt_alloc(RT_ALLOC_L2_CL_DATA, nnz*sizeof(short int));
   IA = (short int *) rt_alloc(RT_ALLOC_L2_CL_DATA, (H_M1+1)*sizeof(short int));
 

@@ -15,13 +15,13 @@ typedef struct {
         //short int * __restrict__ In1;
         //unsigned int W_In1;
         //unsigned int H_In1;
-        short int * __restrict__ In2;
+        signed char * __restrict__ In2;
         unsigned int W_In2;
         short int * __restrict__ Out;
         unsigned int W_Out;
         unsigned int OutFirstCol;       // Equal M2FirstCol
         short int *BufferColIn2;        // In case vectorization is used will be used to copy a column of In2 into a line
-        short int * __restrict__ A;
+        signed char * __restrict__ A;
         short int * __restrict__ IA;
         short int * __restrict__ JA;
 } KerMatMultParallel_ArgT;

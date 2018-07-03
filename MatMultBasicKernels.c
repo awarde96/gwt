@@ -42,13 +42,13 @@ void KerMatMultParallel(KerMatMultParallel_ArgT *Arg)
   //short int * __restrict__ In1 = Arg->In1;
   //unsigned int W_In1 = Arg->W_In1;
   //unsigned int H_In1 = Arg->H_In1;
-  short int * __restrict__ In2 = Arg->In2;
+  signed char * __restrict__ In2 = Arg->In2;
   unsigned int W_In2 = Arg->W_In2;
   short int * __restrict__ Out = Arg->Out;
   unsigned int W_Out = Arg->W_Out;
   unsigned int OutFirstCol = Arg->OutFirstCol;
 
-  short int * __restrict__ A = Arg->A;
+  signed char * __restrict__ A = Arg->A;
   short int * __restrict__ IA = Arg->IA;
   short int * __restrict__ JA = Arg->JA;
 
