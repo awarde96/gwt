@@ -63,8 +63,8 @@ int main()
 
   printf ("Matrix Mult start\n");
   int H_M1 = 10;
-  int W_M1 = 500;
-  int H_M2 = 500;
+  int W_M1 = 1000;
+  int H_M2 = 1000;
   int W_M2 = 1;
 
   int W_Out = H_M1;

@@ -102,14 +102,14 @@ void Model(unsigned int L1Memory)
 
 	LoadLibrary();
 
-	ParMatMultGenerator    ("ParMatMult",     10, 500, 500, 1);
+	ParMatMultGenerator    ("ParMatMult",     10, 1000, 1000, 1);
 }
 
 int main(int argc, char **argv)
 
 {
         if (TilerParseOptions(argc, argv)) GenTilingError("Failed to initialize or incorrect output arguments directory.\n");
-        Model(40000);
+        Model(64000);
         GenerateTilingCode();
         return 0;
 }
