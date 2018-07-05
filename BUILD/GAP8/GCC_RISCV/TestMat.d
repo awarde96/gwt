@@ -107,7 +107,7 @@
  ModelKernels.h \
  /home/gwt/gap_sdk/tools/autotiler/StdTypes/KernelLibStdTypes.h \
  /home/gwt/gap_sdk/tools/autotiler/StdTypes/StdTypes.h ModelKernelsInit.h \
- MatMultBasicKernels.h
+ MatMultBasicKernels.h model-size.h
 
 /home/gwt/gap_sdk/install/gap/include/pulp-os/gap_config.h:
 
@@ -328,3 +328,5 @@ ModelKernels.h:
 ModelKernelsInit.h:
 
 MatMultBasicKernels.h:
+
+model-size.h:

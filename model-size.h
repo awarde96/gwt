@@ -1,0 +1,4 @@
+#define WIDTH 3000
+#define SPARSITY 5
+
+#define L1_MEMORY_SIZE 64000

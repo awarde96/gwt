@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include "Gap8.h"
 #include "ModelKernels.h"
+#include "model-size.h"
 
 #define MOUNT           1
 #define UNMOUNT         0
@@ -63,8 +64,8 @@ int main()
 
   printf ("Matrix Mult start\n");
   int H_M1 = 10;
-  int W_M1 = 3000;
-  int H_M2 = 3000;
+  int W_M1 = WIDTH;
+  int H_M2 = WIDTH;
   int W_M2 = 1;
 
   int W_Out = H_M1;
@@ -79,7 +80,7 @@ int main()
   }
 
   for(int i=0;i< W_M1*H_M1;i++) {
-    if(i%5 == 1)
+    if(i%SPARSITY == 1)
       M1[i]=2;
     else
       M1[i]=0;

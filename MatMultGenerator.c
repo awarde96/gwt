@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include "AutoTilerLib.h"
 #include "StdTypes.h"
+#include "model-size.h"
 
 void LoadLibrary()
 
@@ -80,9 +81,9 @@ void ParMatMultGenerator(char *Name, unsigned int LineM1, unsigned int ColM1, un
 			//KerArg("KerM1",  OBJ_IN_DB|O_TILE1,  ColM1, LineM1, sizeof(Word16), 0, 0,                        0, "M1",  0),
 			KerArg("KerM2",  OBJ_IN_DB,  ColM2, LineM2, sizeof(Word8), 0, OBJ_CONSTRAINTS_TILE_VER, 0, "M2",  0),
 			KerArg("KerOut", OBJ_OUT_DB|O_TILE1, ColO,  LineO,  sizeof(Word16), 0, 0,                        0, "Out", 0),
-			KerArg("KerA",  OBJ_IN_DB|O_TILE1,  (LineM1*ColM1)/5, 1, sizeof(Word8), 0, 0,                        0, "A",  0),
+			KerArg("KerA",  OBJ_IN_DB|O_TILE1,  (LineM1*ColM1)/SPARSITY, 1, sizeof(Word8), 0, 0,                        0, "A",  0),
 			KerArg("KerIA",  OBJ_IN_DB|O_TILE1,  (LineM1) + 1, 1, sizeof(Word16), 0, 0,                        0, "IA",  0),
-			KerArg("KerJA",  OBJ_IN_DB|O_TILE1,  (LineM1*ColM1)/5, 1, sizeof(Word16), 0, 0,                        0, "JA",  0)
+			KerArg("KerJA",  OBJ_IN_DB|O_TILE1,  (LineM1*ColM1)/SPARSITY, 1, sizeof(Word16), 0, 0,                        0, "JA",  0)
 		)
 	);
 }
@@ -102,14 +103,14 @@ void Model(unsigned int L1Memory)
 
 	LoadLibrary();
 
-	ParMatMultGenerator    ("ParMatMult",     10, 3000, 3000, 1);
+	ParMatMultGenerator    ("ParMatMult",     10, WIDTH, WIDTH, 1);
 }
 
 int main(int argc, char **argv)
 
 {
         if (TilerParseOptions(argc, argv)) GenTilingError("Failed to initialize or incorrect output arguments directory.\n");
-        Model(64000);
+        Model(L1_MEMORY_SIZE);
         GenerateTilingCode();
         return 0;
 }
