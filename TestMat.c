@@ -63,8 +63,8 @@ int main()
 
   printf ("Matrix Mult start\n");
   int H_M1 = 10;
-  int W_M1 = 1500;
-  int H_M2 = 1500;
+  int W_M1 = 3000;
+  int H_M2 = 3000;
   int W_M2 = 1;
 
   int W_Out = H_M1;
@@ -79,7 +79,7 @@ int main()
   }
 
   for(int i=0;i< W_M1*H_M1;i++) {
-    if(i%2 == 1)
+    if(i%5 == 1)
       M1[i]=2;
     else
       M1[i]=0;
