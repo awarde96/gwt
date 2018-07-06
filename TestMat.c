@@ -31,6 +31,9 @@ L2_MEM rt_perf_t *cluster_perf;
 int finished = 0;
 int nnz = 0;
 
+unsigned short lfsr = 0xACE1u;
+unsigned bit;
+
 static void cluster_main()
 {
   	printf ("cluster master start\n");
@@ -57,6 +60,11 @@ static void cluster_main()
 static void end_of_app(){
   finished = 1;
   printf ("End of application\n");
+}
+
+unsigned rand(){
+  bit = ((lfsr >> 0) ^ (lfsr >> 2) ^ (lfsr >> 3) ^ (lfsr >> 5) ) & 1;
+  return lfsr = (lfsr >> 1) | (bit << 15);
 }
 
 int main()
@@ -184,6 +192,10 @@ int main()
       //printf("%d ", A[j] * M2[JA[j]]);
     }
     printf("%d ", S);
+  }
+
+  for(int i = 0; i < 100; i++){
+    printf("%d ", rand()%4);
   }
 
   printf("Test success\n");
