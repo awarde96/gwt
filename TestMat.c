@@ -194,9 +194,9 @@ int main()
     printf("%d ", S);
   }
 
-  for(int i = 0; i < 100; i++){
-    printf("%d ", rand()%4);
-  }
+  //for(int i = 0; i < 100; i++){
+   // printf("%d ", rand()%4);
+  //}
 
   printf("Test success\n");
 
