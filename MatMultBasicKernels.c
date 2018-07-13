@@ -88,19 +88,15 @@ void KerMatMultParallel(KerMatMultParallel_ArgT *Arg)
     for (Line=0; Line<H_In1; Line++) {
       int S = 0;     
       if((unsigned int) gap8_coreid() == (Line)%8){
-        //printf("%d\n", Line/total);
         for (int i=0; i</*W_In1*/IA[Line+1] - IA[Line]; i++) {               
-          S = S + (A[i+acc] * In2[JA[(i+acc)]%10]);//In1[Line*W_In1 + i] * In2[i*W_In2+Col];
+          S += A[i+acc] * In2[JA[(i+acc)]];//In1[Line*W_In1 + i] * In2[i*W_In2+Col];
           //printf("%d ", S);
           //printf("%d\n", In2[i+acc%10]);
         }     
-        acc += IA[Line+1] - IA[Line];
         //Out[Line*W_Out+Col+OutFirstCol] = S;
         Out[Line] = S;
-        //printf("%d ", Line*W_Out+Col+OutFirstCol);
       }
-
-      //printf("%d ", S);
+      acc += IA[Line+1] - IA[Line];
     }
   //}
 

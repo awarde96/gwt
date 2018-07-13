@@ -89,7 +89,7 @@ int main()
 
   for(int i=0;i< W_M1*H_M1;i++) {
     if(i%SPARSITY == 1)
-      M1[i]=2;
+      M1[i]=rand()%4;
     else
       M1[i]=0;
   }
@@ -114,18 +114,29 @@ int main()
   IA[0] = 0;
   index = 0;
   int count = 0;
+  //JA[0] = 0;
   for(int i = 0; i < H_M1; i++){
     //int count = 0;
+    //JA[i*W_M1] = 0;
     for(int j = 0; j < W_M1; j++){
       if(M1[i*W_M1 + j] != 0){
         count++;
-        JA[index++] = j;
+        JA[index] = j; //- JA[index-1];
+        //printf("%d ", JA[index]);
+        index++;
       }
-
     }
     IA[i+1] = count;
   }
 
+  //for(int i = 1; i < nnz; i++){
+    //int temp = JA[i];
+    //JA[i] = temp - JA[i-1];
+  //}
+
+  //for(int i = 0; i < nnz; i++){
+    //printf("%d \n", nnz);
+  //}
 
 
   // Allocate some events
@@ -165,7 +176,7 @@ int main()
       //return -1;
       //}
     }
-    printf("\nCount ");
+    //printf("\nCount ");
   }
   /*printf("%d\nA \n", count);
 
@@ -185,12 +196,14 @@ int main()
   }*/
 
   printf("\n");
+  int acc = 0;
   for(int i = 0; i < W_Out; i++){
     int S = 0;
     for(int j = 0; j < IA[i+1] - IA[i]; j++){
-      S = S + A[j] * M2[JA[j]];
+      S += A[acc+j] * M2[JA[j+acc]];
       //printf("%d ", A[j] * M2[JA[j]]);
     }
+    acc += IA[i+1] - IA[i];
     printf("%d ", S);
   }
 

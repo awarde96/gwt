@@ -4,9 +4,9 @@
 #include "KernelLibStdTypes.h"
 #include "ModelKernelsInit.h"
 #include "MatMultBasicKernels.h"
-#define _L1_Memory_SIZE 42088
+#define _L1_Memory_SIZE 4288
 #define _L2_Memory_SIZE 0
-extern char *L1_Memory; /* Size given for generation: 64000 bytes, used: 42088 bytes */
+extern char *L1_Memory; /* Size given for generation: 64000 bytes, used: 4288 bytes */
 extern char *L2_Memory; /* Size used for generation: 0 bytes */
 extern void ParMatMult(
 		Word8 *  __restrict__ M2,
