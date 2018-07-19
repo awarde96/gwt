@@ -6,6 +6,7 @@ void ParMatMult(
 		Word8 *  __restrict__ A,
 		Word16 *  __restrict__ IA,
 		Word16 *  __restrict__ JA,
+		Word16 * __restrict__ Bias,
 		Kernel_T *Ker)
 
 {
@@ -14,6 +15,7 @@ void ParMatMult(
 	rt_dma_copy_t DmaR_Evt2;
 	rt_dma_copy_t DmaR_Evt3;
 	rt_dma_copy_t DmaR_Evt4;
+	rt_dma_copy_t DmaR_Evt5;
 	rt_dma_copy_t DmaW_Evt1;
 	int Iter;
 	int Last, NextLast, NextNextLast;
@@ -35,6 +37,7 @@ void ParMatMult(
 	rt_dma_memcpy((rt_pointerT) A+(0), (rt_pointerT) (L1_Memory + 640)+0, 600, RT_DMA_DIR_EXT2LOC, 0, &DmaR_Evt2);
 	rt_dma_memcpy((rt_pointerT) IA+(0), (rt_pointerT) (L1_Memory + 1840)+0, 22, RT_DMA_DIR_EXT2LOC, 0, &DmaR_Evt3);
 	rt_dma_memcpy((rt_pointerT) JA+(0), (rt_pointerT) (L1_Memory + 1888)+0, 1200, RT_DMA_DIR_EXT2LOC, 0, &DmaR_Evt4);
+	rt_dma_memcpy((rt_pointerT) Bias+(0), (rt_pointerT) (L1_Memory + 4288)+0, 20, RT_DMA_DIR_EXT2LOC, 0, &DmaR_Evt5);
 	/* ===================End Read First Tile=========================================== */
 	/* Kernel Iteration Loop on Iter1 space */
 	Iter1=0; {
@@ -45,6 +48,7 @@ void ParMatMult(
 		rt_dma_wait(&DmaR_Evt2);
 		rt_dma_wait(&DmaR_Evt3);
 		rt_dma_wait(&DmaR_Evt4);
+		rt_dma_wait(&DmaR_Evt5);
 		if (!Last1) {
 			rt_dma_memcpy((rt_pointerT) A + ((0+1)*600),
 					(rt_pointerT) (L1_Memory + 640) + (600*((N_Ti1+1) % 2)), 600, RT_DMA_DIR_EXT2LOC, 0, &DmaR_Evt2);
@@ -52,6 +56,8 @@ void ParMatMult(
 					(rt_pointerT) (L1_Memory + 1840) + (24*((N_Ti1+1) % 2)), 22, RT_DMA_DIR_EXT2LOC, 0, &DmaR_Evt3);
 			rt_dma_memcpy((rt_pointerT) JA + ((0+1)*1200),
 					(rt_pointerT) (L1_Memory + 1888) + (1200*((N_Ti1+1) % 2)), 1200, RT_DMA_DIR_EXT2LOC, 0, &DmaR_Evt4);
+			rt_dma_memcpy((rt_pointerT) Bias + ((0+1)*20),
+					(rt_pointerT) (L1_Memory + 4288) + (20*((N_Ti1+1) % 2)), 20, RT_DMA_DIR_EXT2LOC, 0, &DmaR_Evt5);
 		}
 		/* ===================End Read Next Tile=========================================== */
 		/* Kernel Iteration Loop on Iter space */
@@ -79,6 +85,7 @@ void ParMatMult(
 			KerArg0->A = (signed char * __restrict__) ((rt_pointerT) (L1_Memory + 640) + 600*((N_Ti1) % 2));
 			KerArg0->IA = (short int * __restrict__) ((rt_pointerT) (L1_Memory + 1840) + 24*((N_Ti1) % 2));
 			KerArg0->JA = (short int * __restrict__) ((rt_pointerT) (L1_Memory + 1888) + 1200*((N_Ti1) % 2));
+			KerArg0->Bias = (short int * __restrict__) ((rt_pointerT) (L1_Memory + 4288) + 20*((N_Ti1) % 2));
 			rt_team_fork(gap8_ncore(), (void *) KerMatMultParallel, (void *) KerArg0);
 			N_Ti++;
 			/* End Kernel Iteration Loop on Iter space */

@@ -47,6 +47,7 @@ void KerMatMultParallel(KerMatMultParallel_ArgT *Arg)
   short int * __restrict__ Out = Arg->Out;
   unsigned int W_Out = Arg->W_Out;
   unsigned int OutFirstCol = Arg->OutFirstCol;
+  short int * __restrict__ Bias = Arg->Bias;
 
   signed char * __restrict__ A = Arg->A;
   short int * __restrict__ IA = Arg->IA;
@@ -94,6 +95,7 @@ void KerMatMultParallel(KerMatMultParallel_ArgT *Arg)
           //printf("%d\n", In2[i+acc%10]);
         }     
         //Out[Line*W_Out+Col+OutFirstCol] = S;
+        S += Bias[Line];
         Out[Line] = S;
       }
       acc += IA[Line+1] - IA[Line];

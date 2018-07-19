@@ -24,6 +24,7 @@ typedef struct {
         signed char * __restrict__ A;
         short int * __restrict__ IA;
         short int * __restrict__ JA;
+        short int * __restrict__ Bias;
 } KerMatMultParallel_ArgT;
 
 void KerMatMultParallel(

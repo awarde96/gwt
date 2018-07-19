@@ -21,6 +21,7 @@
 L2_MEM short int *M1;
 L2_MEM signed char *M2;
 L2_MEM short int *Out1;
+L2_MEM short int *Bias;
 //L2_MEM short int *Out2;
 
 L2_MEM signed char *A;
@@ -46,14 +47,14 @@ static void cluster_main()
 
     rt_perf_reset(perf);
     rt_perf_start(perf);
-    ParMatMult(/*M1,*/ M2, Out1, A, IA, JA, 0);
+    ParMatMult(/*M1,*/ M2, Out1, A, IA, JA, Bias, 0);
     rt_perf_stop(perf);
     rt_perf_save(perf);
     ElapsedTime[0] = rt_perf_get(perf, RT_PERF_CYCLES);
 
     ElapsedTime[1] = rt_perf_get(perf, RT_PERF_CYCLES) - ElapsedTime[0];
 
-    printf("ParMatMult: %d cycles %d ops/cycle\n", ElapsedTime[0], (4170000/ElapsedTime[0]));
+    printf("ParMatMult: %d cycles \n", ElapsedTime[0]/*, (4170000/ElapsedTime[0])*/);
     //printf("ParVectMatMult: %d cycles, %d ops/cycle\n", ElapsedTime[1], (4170000/ElapsedTime[1]));
 }
 
@@ -82,6 +83,7 @@ int main()
   M1  = (short int *) rt_alloc(RT_ALLOC_L2_CL_DATA, W_M1*H_M1*sizeof(short int));
   M2  = (signed char *) rt_alloc(RT_ALLOC_L2_CL_DATA, W_M2*H_M2*sizeof(char));
   Out1 = (short int *) rt_alloc(RT_ALLOC_L2_CL_DATA, W_Out*H_Out*sizeof(short int));
+  Bias = (short int *) rt_alloc(RT_ALLOC_L2_CL_DATA, 10*sizeof(short int));
   //Out2 = (short int *) rt_alloc(RT_ALLOC_L2_CL_DATA, W_Out*H_Out*sizeof(short int));
   if ((M1==0)||(M2==0)||(Out1==0) /*||(Out2==0)*/) {
     printf("Failed to allocate mem.\n"); return 0;
@@ -89,17 +91,21 @@ int main()
 
   for(int i=0;i< W_M1*H_M1;i++) {
     if(i%SPARSITY == 1)
-      M1[i]=rand()%4;
+      M1[i]=2;//rand()%5;
     else
       M1[i]=0;
   }
   for(int i=0;i< W_M2*H_M2;i++) M2[i]=3;
+
+  for(int i = 0; i < 10; i++) Bias[i] = 3;
 
   nnz = 0;
   for(int i = 0; i < W_M1*H_M1; i++){
     if(M1[i] == 0)
       nnz++;
   }
+
+  nnz = W_M1*H_M1 - nnz;
 
   A = (signed char *) rt_alloc(RT_ALLOC_L2_CL_DATA, nnz*sizeof(signed char));
   JA = (short int *) rt_alloc(RT_ALLOC_L2_CL_DATA, nnz*sizeof(short int));
@@ -129,14 +135,34 @@ int main()
     IA[i+1] = count;
   }
 
-  //for(int i = 1; i < nnz; i++){
-    //int temp = JA[i];
-    //JA[i] = temp - JA[i-1];
-  //}
 
-  //for(int i = 0; i < nnz; i++){
-    //printf("%d \n", nnz);
-  //}
+
+  /*int temp = JA[0];
+  for(int i = nnz; i > 1; i--){
+    int temp = JA[i];
+    JA[i] = temp - JA[i-1];
+    printf("%d ", JA[i]);
+  }*/
+
+  /*for(int i = 0; i < nnz; i++){
+    printf("%d ", JA[i]);
+  }
+
+  //JA[0] = 0;
+  int next = JA[0];
+  int prev;
+  for(int i = 1; i < nnz; i++){
+    if(prev > JA[i]){
+      next = 0;
+    }
+    prev = JA[i];
+    JA[i] = JA[i] - next;
+    next = prev;
+  }
+
+  for(int i = 0; i < nnz; i++){
+    printf("%d ", JA[i]);
+  }*/
 
 
   // Allocate some events
@@ -204,6 +230,7 @@ int main()
       //printf("%d ", A[j] * M2[JA[j]]);
     }
     acc += IA[i+1] - IA[i];
+    S += Bias[i];
     printf("%d ", S);
   }
 
