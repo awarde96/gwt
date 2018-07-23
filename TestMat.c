@@ -91,7 +91,7 @@ int main()
 
   for(int i=0;i< W_M1*H_M1;i++) {
     if(i%SPARSITY == 1)
-      M1[i]=2;//rand()%5;
+      M1[i]=rand()%5;
     else
       M1[i]=0;
   }
@@ -120,22 +120,24 @@ int main()
   IA[0] = 0;
   index = 0;
   int count = 0;
+  int prev = 0;
   //JA[0] = 0;
   for(int i = 0; i < H_M1; i++){
-    //int count = 0;
-    //JA[i*W_M1] = 0;
+    //int prev  = i*W_M1;
     for(int j = 0; j < W_M1; j++){
       if(M1[i*W_M1 + j] != 0){
         count++;
-        JA[index] = j; //- JA[index-1];
-        //printf("%d ", JA[index]);
+        JA[index] = (j + i*W_M1) - prev;
+        //JA[index] = j;
+        printf("%d ", JA[index]);
         index++;
+        prev = i*W_M1 + j;
       }
     }
     IA[i+1] = count;
   }
 
-
+  printf("\n");
 
   /*int temp = JA[0];
   for(int i = nnz; i > 1; i--){
@@ -225,8 +227,10 @@ int main()
   int acc = 0;
   for(int i = 0; i < W_Out; i++){
     int S = 0;
+    int prev = 0;
     for(int j = 0; j < IA[i+1] - IA[i]; j++){
-      S += A[acc+j] * M2[JA[j+acc]];
+      prev += JA[j+acc];
+      S += A[acc+j] * M2[JA[prev]];
       //printf("%d ", A[j] * M2[JA[j]]);
     }
     acc += IA[i+1] - IA[i];
