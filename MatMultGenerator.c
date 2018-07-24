@@ -29,7 +29,7 @@ void LoadLibrary()
 			TCArg("short int * __restrict__", "BufferColIn2"),
 			TCArg("signed char * __restrict__", "A"),
 			TCArg("short int * __restrict__", "IA"),
-			TCArg("short int * __restrict__", "JA"),
+			TCArg("signed char * __restrict__", "JA"),
 			TCArg("short int * __restrict__", "Bias"),
 			TCArg("short int * __restrict__", "row_start")
 		),
@@ -67,7 +67,7 @@ void ParMatMultGenerator(char *Name, unsigned int LineM1, unsigned int ColM1, un
                         TCArg("Word16 *  __restrict__", "Out"),
                         TCArg("Word8 *  __restrict__", "A"),
                         TCArg("Word16 *  __restrict__", "IA"),
-                        TCArg("Word16 *  __restrict__", "JA"),
+                        TCArg("Word8 *  __restrict__", "JA"),
                         TCArg("Word16 * __restrict__", "Bias"),
                         TCArg("Word16 * __restrict__", "row_start")
                 ),
@@ -88,7 +88,7 @@ void ParMatMultGenerator(char *Name, unsigned int LineM1, unsigned int ColM1, un
 			KerArg("KerOut", OBJ_OUT_DB|O_TILE1, ColO,  LineO,  sizeof(Word16), 0, 0,                        0, "Out", 0),
 			KerArg("KerA",  OBJ_IN_DB|O_TILE1,  (LineM1*ColM1)/SPARSITY, 1, sizeof(Word8), 0, 0,                        0, "A",  0),
 			KerArg("KerIA",  OBJ_IN_DB|O_TILE1,  (LineM1) + 1, 1, sizeof(Word16), 0, 0,                        0, "IA",  0),
-			KerArg("KerJA",  OBJ_IN_DB|O_TILE1,  (LineM1*ColM1)/SPARSITY, 1, sizeof(Word16), 0, 0,                        0, "JA",  0),
+			KerArg("KerJA",  OBJ_IN_DB|O_TILE1,  (LineM1*ColM1)/SPARSITY, 1, sizeof(Word8), 0, 0,                        0, "JA",  0),
 			KerArg("KerBias",  OBJ_IN_DB|O_TILE1,  LineM1, 1, sizeof(Word16), 0, 0,                        0, "Bias",  0),
 			KerArg("KerRS",  OBJ_IN_DB|O_TILE1,  LineM1, 1, sizeof(Word16), 0, 0,                        0, "row_start",  0)
 		)

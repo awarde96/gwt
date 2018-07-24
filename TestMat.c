@@ -26,7 +26,7 @@ L2_MEM short int *Bias;
 
 L2_MEM signed char *A;
 L2_MEM short int *IA;
-L2_MEM short int *JA;
+L2_MEM signed char *JA;
 L2_MEM short int *row_start;
 
 L2_MEM rt_perf_t *cluster_perf;
@@ -109,7 +109,7 @@ int main()
   nnz = W_M1*H_M1 - nnz;
 
   A = (signed char *) rt_alloc(RT_ALLOC_L2_CL_DATA, nnz*sizeof(signed char));
-  JA = (short int *) rt_alloc(RT_ALLOC_L2_CL_DATA, nnz*sizeof(short int));
+  JA = (signed char *) rt_alloc(RT_ALLOC_L2_CL_DATA, nnz*sizeof(signed char));
   IA = (short int *) rt_alloc(RT_ALLOC_L2_CL_DATA, (H_M1+1)*sizeof(short int));
   row_start = (short int *) rt_alloc(RT_ALLOC_L2_CL_DATA, H_M1*sizeof(short int));
 

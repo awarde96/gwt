@@ -23,7 +23,7 @@ typedef struct {
         short int *BufferColIn2;        // In case vectorization is used will be used to copy a column of In2 into a line
         signed char * __restrict__ A;
         short int * __restrict__ IA;
-        short int * __restrict__ JA;
+        signed char * __restrict__ JA;
         short int * __restrict__ Bias;
         short int * __restrict__ row_start;
 } KerMatMultParallel_ArgT;

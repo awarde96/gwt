@@ -51,7 +51,7 @@ void KerMatMultParallel(KerMatMultParallel_ArgT *Arg)
 
   signed char * __restrict__ A = Arg->A;
   short int * __restrict__ IA = Arg->IA;
-  short int * __restrict__ JA = Arg->JA;
+  signed char * __restrict__ JA = Arg->JA;
   short int * __restrict__ row_start = Arg->row_start;
 
   unsigned int W_In1 = 300;
