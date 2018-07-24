@@ -52,8 +52,9 @@ void KerMatMultParallel(KerMatMultParallel_ArgT *Arg)
   signed char * __restrict__ A = Arg->A;
   short int * __restrict__ IA = Arg->IA;
   short int * __restrict__ JA = Arg->JA;
+  short int * __restrict__ row_start = Arg->row_start;
 
-  unsigned int W_In1 = W_In2;
+  unsigned int W_In1 = 300;
   unsigned int H_In1 = 10;
 
   unsigned int H_In2 = W_In1;
@@ -75,24 +76,16 @@ void KerMatMultParallel(KerMatMultParallel_ArgT *Arg)
   }*/
 //  wait_synch_barrier();
 
-  /*for(unsigned int i = 0; i < W_Out; i++){
-    int S = 0;
-    for(unsigned int j = 0; j < (W_In1*H_In1)/2; j++){
-      S = S + A[j+(i*W_Out)] * In2[JA[j+(i*W_Out)]]; 
-    }
-    Out[i] = S;
-  }*/
-
-  int acc = 0;
+  //working version where JA consists of column index's
+  /*int acc = 0;
   //int total = H_In1/rt_nb_pe();
-  //for (Col=0; Col<Last; Col++) {
     for (Line=0; Line<H_In1; Line++) {
       int S = 0;     
       int prev = 0;
       if((unsigned int) gap8_coreid() == (Line)%8){
         acc = IA[Line];
         //acc = IA[Line+1] - IA[Line];
-        for (int i=0; i</*W_In1*/IA[Line+1] - IA[Line]; i++) {   
+        for (int i=0; i<IA[Line+1] - IA[Line]; i++) {   
           //prev += JA[acc+i];            
           S += A[i+acc] * In2[JA[(i+acc)]];//In1[Line*W_In1 + i] * In2[i*W_In2+Col];
           //printf("%d ", S);
@@ -103,8 +96,28 @@ void KerMatMultParallel(KerMatMultParallel_ArgT *Arg)
         Out[Line] = S;
       }
       //acc += IA[Line+1] - IA[Line];
+    }*/
+
+  //version where JA consists of offsets
+  int acc = 0;
+  //int total = H_In1/rt_nb_pe();
+  //outer loop to allocate each row ro a core
+    for (Line=0; Line<H_In1; Line++) {
+      // if statement to allcocate the row to the core
+      if((unsigned int) gap8_coreid() == (Line)%8){
+        int prev = row_start[Line];
+        int S = 0;     //initialise the sum for that row
+        acc = IA[Line]; //set the accumulator to the first JA entry for the row from IA
+        //acc = IA[Line+1] - IA[Line];
+        for (int i=0; i</*W_In1*/IA[Line+1] - IA[Line]; i++) {        
+          prev += JA[acc+i];      
+          S += A[i+acc] * In2[prev - (Line*W_In1)];//In1[Line*W_In1 + i] * In2[i*W_In2+Col]; 
+        }     
+        S += Bias[Line];
+        Out[Line] = S;
+      }
+      //acc += IA[Line+1] - IA[Line];
     }
-  //}
 
 
   /*for(Col=First; Col<Last; Col++){

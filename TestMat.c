@@ -27,6 +27,7 @@ L2_MEM short int *Bias;
 L2_MEM signed char *A;
 L2_MEM short int *IA;
 L2_MEM short int *JA;
+L2_MEM short int *row_start;
 
 L2_MEM rt_perf_t *cluster_perf;
 int finished = 0;
@@ -47,7 +48,7 @@ static void cluster_main()
 
     rt_perf_reset(perf);
     rt_perf_start(perf);
-    ParMatMult(/*M1,*/ M2, Out1, A, IA, JA, Bias, 0);
+    ParMatMult(/*M1,*/ M2, Out1, A, IA, JA, Bias, row_start,0);
     rt_perf_stop(perf);
     rt_perf_save(perf);
     ElapsedTime[0] = rt_perf_get(perf, RT_PERF_CYCLES);
@@ -91,7 +92,7 @@ int main()
 
   for(int i=0;i< W_M1*H_M1;i++) {
     if(i%SPARSITY == 1)
-      M1[i]=2;//rand()%5;
+      M1[i]=rand()%5;
     else
       M1[i]=0;
   }
@@ -110,6 +111,7 @@ int main()
   A = (signed char *) rt_alloc(RT_ALLOC_L2_CL_DATA, nnz*sizeof(signed char));
   JA = (short int *) rt_alloc(RT_ALLOC_L2_CL_DATA, nnz*sizeof(short int));
   IA = (short int *) rt_alloc(RT_ALLOC_L2_CL_DATA, (H_M1+1)*sizeof(short int));
+  row_start = (short int *) rt_alloc(RT_ALLOC_L2_CL_DATA, H_M1*sizeof(short int));
 
   int index = 0;
   for(int i = 0; i < W_M1*H_M1; i++){
@@ -118,25 +120,32 @@ int main()
   }
 
   IA[0] = 0;
+  row_start[0] = 0;
   index = 0;
-  int count = 0;
   int prev = 0;
-  //JA[0] = 0;
+  int count = 0;
   for(int i = 0; i < H_M1; i++){
     //int prev  = i*W_M1;
+    int check = 0;
     for(int j = 0; j < W_M1; j++){
       if(M1[i*W_M1 + j] != 0){
+        /*if(check == 0){
+          row_start[i] = i*W_M1 + j;
+          check = 1;
+        }*/
         count++;
         JA[index] = (j + i*W_M1) - prev;
         //JA[index] = j;
         //printf("%d ", JA[index]);
         index++;
         prev = i*W_M1 + j;
+        row_start[i+1] = prev;
       }
     }
     IA[i+1] = count;
     //printf("%d ", count);
   }
+
 
   printf("\n");
 
